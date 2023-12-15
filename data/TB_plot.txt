@@ -1,0 +1,20 @@
+set xlabel font "Arial,20" offset 0,-1
+set ylabel font "Arial,20" offset -2,0
+set xlabel "time [h]"
+set xrange [0:100]
+set yrange [0:1.7E6]
+set ylabel "NMR signal intensity [a.u.]"
+set tics font "Arial,15"
+set bmargin 5
+set lmargin 15
+
+
+f(x) = a*(1-exp(-x/b))
+a = 1.3E6
+b = 7
+c = 1E5
+
+fit f(x) "buildup_3k_5,7W_PD20min_20minstart_unfinished.txt"u($1/60):2  via a,b
+
+plot "buildup_3k_5,7W_PD20min_20minstart_unfinished.txt"u($1/60):2 ,f(x),"2k.txt"u($1/60):2 ,"1,5k.txt"u($1/60):2
+

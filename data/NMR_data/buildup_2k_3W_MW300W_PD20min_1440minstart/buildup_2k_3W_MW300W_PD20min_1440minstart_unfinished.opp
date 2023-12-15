@@ -1,0 +1,19 @@
+point=256
+dw=1
+sf1=12.747
+#
+
+[Log]
+actualNA=1
+
+[XAxis]
+isCustom=false
+xInitialValue=0
+xIncrement=1e-6
+xAxisLabel=
+xAxisUnitSymbol=sec
+metricPrefix=micro
+plotMetricPrefix=milli
+p0 =  0.000
+p1 =  0.000
+rpp= 4.78515625000000E-0001

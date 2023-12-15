@@ -1,0 +1,19 @@
+set xlabel font "Arial,20" offset 0,-1
+set ylabel font "Arial,20" offset -2,0
+set xlabel "time [h]"
+set xrange [0:30]
+set yrange [0:1E6]
+set ylabel "NMR signal intensity [a.u.]"
+set tics font "Arial,15"
+set bmargin 5
+set lmargin 15
+
+
+f(x) = a*exp(-x/b)
+a = 6.8E5
+b = 9
+c = 10
+
+fit f(x) "Tlaser_3kHz_4,5W_PD30min_unfinished.txt"  via a,b
+
+plot "Tlaser_3kHz_4,5W_PD30min_unfinished.txt" , f(x)
