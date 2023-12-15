@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from IPython.display import Image
 import array
+import sys
 
 # Import PySwarms
 import pyswarms as ps
@@ -128,13 +129,13 @@ cost, pos = optimizer.optimize(object_function, iters)
 # 最適化された値を表示
 #print("TD_best={:.3f} h, TL_best={:.3f} h,P0={:.3f}, alpha_best={}, beta_best={}, gamma_best={}, delta_best={:.3f},epsilon_best={:.3f}".format(pos[0],pos[1],pos[2],'{:.3e}'.format(10**pos[3]),'{:.3e}'.format(10**pos[4]),pos[5],pos[6],pos[7]))
 print("TD_best={:.3f} h, TL_best={:.3f} h,P0={:.3f}, alpha_best={}, beta_best={}, gamma_best={}".format(pos[0],pos[1],pos[2],'{:.3e}'.format(10**pos[3]),'{:.3e}'.format(10**pos[4]),pos[5]))
-
+print(pos[0],pos[1],pos[2],'{:.3e}'.format(10**pos[3]),'{:.3e}'.format(10**pos[4]),pos[5])
 # 最適化された座標を表示
 print("cost_min={:.5f}".format(cost))
 
 print('所要時間は{:.7f}です。'.format(time.time()-start))
 print('TD_bestとTL_bestによる偏極度は{:.3f}です。'.format(0.9/(1.+(pos[0]/pos[1]))))
-
+#sys.exit()
 TD = pos[0]
 TL = pos[1]
 P0 = pos[2]
@@ -148,7 +149,71 @@ with open(R'C:\Users\mtsit\reserch\data\calc_PSO.txt',mode = 'w') as f:
     for i in range(len(difcalc.theoreticalValue(TD,TL,P0,alpha,beta,gamma))):
         f.write('{:.7f} {:.7f}\n'.format(1540+i*20,difcalc.theoreticalValue(TD,TL,P0,alpha,beta,gamma)[i]))
 
+##################################################
 
+
+# FigureとAxesの設定
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111)
+
+ax.set_xlabel("time [h]", fontsize=14)
+ax.set_ylabel("Signal Intensity [a.u]", fontsize=14)
+ax.set_xlim(1540/60,4080/60)
+ax.set_ylim(-1.5, 1.5)
+
+f = np.loadtxt(R'C:\Users\mtsit\reserch\data\1540-4080_to_plot.txt')
+
+
+
+t = f[:,0]/60.
+P = f[:,1]/0.533
+cal = np.genfromtxt(R"C:\Users\mtsit\reserch\data\calc_PSO.txt")
+plt.xlim([1540/60,4080/60])
+plt.ylim([0.45/0.533,0.60/0.533])
+# Axesにグラフをプロット
+ax.plot(t, P, 'o')
+ax.plot(cal[:,0]/60.,cal[:,1],'-')
+#ax.plot(cal[:,0]/60.,cal[:,1],'-')
+
+# y1とy1の間をライム色で塗り潰す
+ax.axhspan(ymin=0, ymax=1.2, xmin=(2189-1540)/60/(4080/60-1540/60), xmax=(2649-1540)/60/(4080/60-1540/60), color="red", alpha=0.3)
+ax.axhspan(ymin=0, ymax=1.2, xmin=(3478-1540)/60/(4080/60-1540/60), xmax=(4080-1540)/60/(4080/60-1540/60), color="red", alpha=0.3)
+
+plt.show()
+#######################################################################
+
+##################################################
+
+
+# FigureとAxesの設定
+fig = plt.figure(figsize=(8, 6))
+ax = fig.add_subplot(111)
+
+ax.set_xlabel("time [h]", fontsize=14)
+ax.set_ylabel("Polarization", fontsize=14)
+ax.set_xlim(1540/60,4080/60)
+ax.set_ylim(-1.5, 1.5)
+
+f = np.loadtxt(R'C:\Users\mtsit\reserch\data\1540-4080_to_plot.txt')
+
+
+
+t = f[:,0]/60.
+P = f[:,1]
+cal = np.genfromtxt(R"C:\Users\mtsit\reserch\data\calc_PSO.txt")
+plt.xlim([1540/60,4080/60])
+plt.ylim([0.45,0.60])
+# Axesにグラフをプロット
+ax.plot(t, P, 'o')
+ax.plot(cal[:,0]/60.,cal[:,1],'-')
+#ax.plot(cal[:,0]/60.,cal[:,1],'-')
+
+# y1とy1の間をライム色で塗り潰す
+ax.axhspan(ymin=0, ymax=1.2, xmin=(2189-1540)/60/(4080/60-1540/60), xmax=(2649-1540)/60/(4080/60-1540/60), color="red", alpha=0.3)
+ax.axhspan(ymin=0, ymax=1.2, xmin=(3478-1540)/60/(4080/60-1540/60), xmax=(4080-1540)/60/(4080/60-1540/60), color="red", alpha=0.3)
+
+plt.show()
+#######################################################################
 
 #プロット用にNMR測定をしていない0を入れてある点を抜いたデータを使用
 f = np.loadtxt(R'C:\Users\mtsit\reserch\data\1540-4080_to_plot.txt')
@@ -159,6 +224,9 @@ P = f[:,1]
 g = np.loadtxt(R'C:\Users\mtsit\reserch\data\beamtime.txt')
 t2 = g[:,0]/60.
 y = g[:,1]*6/5
+
+
+
 
 cal = np.genfromtxt(R"C:\Users\mtsit\reserch\data\calc_PSO.txt")
 
@@ -172,9 +240,13 @@ plt.ylim([0.45,0.60])
 plt.plot(t, P,'o')
 plt.plot(t2,y)
 plt.plot(cal[:,0]/60.,cal[:,1],'-')
-plt.xlabel('t [h]')
-plt.ylabel('P')
-plt.legend(['Row data','PSO'])
+
+
+
+plt.xlabel('time [h]')
+plt.ylabel('Polarization')
+#plt.legend(['Row data','PSO'])
+plt.legend(['Row data'])
 #plt.legend(['Row data','Gauss-Newton','Levenberg-Marquardt'])
 
 plt.subplot(1,2,2)
@@ -182,6 +254,7 @@ plt.subplot(1,2,2)
 plt.plot(optimizer.cost_history,'-')
 plt.xlabel('iterations')
 plt.ylabel('cost')
+
 
 
 """
@@ -356,3 +429,4 @@ animation = plot_contour(pos_history=pos_hist_2dim,title = "alpha - beta")
 animation.save('alpha-beta.gif', writer='pillow', fps=10)
 Image(url='plot0.gif')
 """
+
